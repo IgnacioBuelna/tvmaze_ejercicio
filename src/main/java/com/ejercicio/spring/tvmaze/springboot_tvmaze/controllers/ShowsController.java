@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +30,7 @@ public class ShowsController {
             HttpClient client = HttpClient.newHttpClient();
 
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.tvmaze.com/search/shows?q=girls"))
+                .uri(URI.create("https://api.tvmaze.com/search/shows?q=" + search_query))
                 .GET()
                 .header("Accept", "application/json")
                 .build();
@@ -62,7 +63,5 @@ public class ShowsController {
             e.printStackTrace();
             return null;
         }
-        
     }
-    
 }
