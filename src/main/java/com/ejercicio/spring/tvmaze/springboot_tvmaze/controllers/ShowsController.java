@@ -64,4 +64,43 @@ public class ShowsController {
             return null;
         }
     }
+    
+    @GetMapping("/show/{show_id}")
+    public ShowResponse getShow(@PathVariable int show_id) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.tvmaze.com/shows/" + show_id))
+                .GET()
+                .header("Accept", "application/json")
+                .build();
+            
+            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+
+            ObjectMapper mapper = new ObjectMapper();
+            ShowInfo showInfo = mapper.readValue(response.body(), ShowInfo.class);
+
+            ShowResponse showResponse = new ShowResponse();
+            showResponse.id = showInfo.id;
+            showResponse.name = showInfo.name;
+            showResponse.channel = "";
+            showResponse.summary = showInfo.summary;
+            showResponse.genres = showInfo.genres;
+
+            if (showInfo.network != null) {
+                showResponse.channel = showInfo.network.name;
+            }
+            if (showInfo.webChannel != null) {
+                showResponse.channel = showInfo.webChannel.name;
+            }
+            return showResponse;
+            //return mapper.readValue(response.body(), ShowResponse.class);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
 }
